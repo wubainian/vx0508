@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 import io.virtualapp.R;
 import io.virtualapp.abs.ui.VActivity;
@@ -99,9 +98,11 @@ public class MySplashActivity extends VActivity {
                         PACKAGE_HOOK_VX,
                         "app-debug.apk",
                         //"app-debug-officialaccount-1.1.201905081513.apk_",
-                        "app-debug-robot-1.1.201905081513_.apk",
+                        //"app-debug-robot-1.1.201905081513.apk_",
+                        "app-debug-robot-1.2.201905081711.apk_",
                         //"56A9356480D98FD15485C91515058032",
-                        "D850E58F65F5ABB207AAF7884B751B56",
+                        //"D850E58F65F5ABB207AAF7884B751B56",
+                        "D252CEF55A84DDA862AD8495F1D01E00",
                         "正在安装模块2"
                 },
                 {
