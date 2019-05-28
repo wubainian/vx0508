@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -92,21 +93,24 @@ public class MySplashActivity extends VActivity {
                         "XposedInstaller_3.1.5.apk",
                         "XposedInstaller_3.1.5.apk_",
                         "8537fb219128ead3436cc19ff35cfb2e",
-                        "正在安装模块1"
+                        "正在安装模块1",
+                        "false"
                 },
                 {
                         PACKAGE_HOOK_VX,
                         "app-debug.apk",
-                        "app-debug-robot-1.3.201905201556.apk_",
-                        "CC7BBEEBDE92036E34D7AE75FBBBDD81",
-                        "正在安装模块2"
+                        "app-debug-robot-1.4.201905281302.apk_",
+                        "5F17F6F27A064C1191C51FBFFA0BB219",
+                        "正在安装模块2",
+                        "true"
                 },
                 {
                         PACKAGE_TENCENT_MM,
                         "weixin703android1400.apk",
                         "weixin703android1400.apk_",
                         "CAD927E843B4382F3C757EBE8A95722B",
-                        "正在安装模块3"
+                        "正在安装模块3",
+                        "false"
                 }
         };
 
@@ -114,6 +118,23 @@ public class MySplashActivity extends VActivity {
             String[] module = modules[i];
 
             boolean isXposedAppInstalled = checkAppIsInstalled(module[0]);
+            if(isXposedAppInstalled) {
+                if("true".equalsIgnoreCase(module[5])) {
+                    File appFile = getFileStreamPath(module[1]);
+                    String dataFileMD5 = null;
+                    try {
+                        dataFileMD5 = MD5Utils.getFileMD5String(appFile);
+                    } catch (Exception e) {
+                        Log.e(TAG, "failed to get file md5, file=" + module[1], e);
+                    }
+                    if(!module[3].equalsIgnoreCase(dataFileMD5)){
+                        isXposedAppInstalled = false;
+                        Log.d(TAG, "onCreate : app is installed but md5 is not correct. file=" + module[1]);
+                    }else{
+                        Log.d(TAG, "onCreate : app md5 is checked successfully. file=" + module[1]);
+                    }
+                }
+            }
             Log.d(TAG, "onCreate :isXposedAppInstalled=" + isXposedAppInstalled);
             if(!isXposedAppInstalled) {
                 installApps(module[0], module[1], module[2], module[3], module[4]);
