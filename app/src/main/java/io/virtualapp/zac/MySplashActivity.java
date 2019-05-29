@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -98,9 +97,9 @@ public class MySplashActivity extends VActivity {
                 },
                 {
                         PACKAGE_HOOK_VX,
-                        "app-debug.apk",
+                        "app-vx.apk",
                         "app-debug-robot-1.4.201905281302.apk_",
-                        "5F17F6F27A064C1191C51FBFFA0BB219",
+                        "1D473FC8EED9505D301DA34F9E4BB77E",
                         "正在安装模块2",
                         "true"
                 },
