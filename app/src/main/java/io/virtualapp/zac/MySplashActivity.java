@@ -224,24 +224,22 @@ public class MySplashActivity extends VActivity {
     }
 
     private boolean copyAssetsFile(File destFilePath, String assetsFileName) {
-        if (!destFilePath.exists()) {
-            InputStream input = null;
-            OutputStream output = null;
-            try {
-                input = getApplicationContext().getAssets().open(assetsFileName);
-                output = new FileOutputStream(destFilePath);
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = input.read(buffer)) > 0) {
-                    output.write(buffer, 0, length);
-                }
-                return true;
-            } catch (Throwable e) {
-                VLog.e(TAG, "copy file error", e);
-            } finally {
-                FileUtils.closeQuietly(input);
-                FileUtils.closeQuietly(output);
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = getApplicationContext().getAssets().open(assetsFileName);
+            output = new FileOutputStream(destFilePath);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
             }
+            return true;
+        } catch (Throwable e) {
+            VLog.e(TAG, "copy file error", e);
+        } finally {
+            FileUtils.closeQuietly(input);
+            FileUtils.closeQuietly(output);
         }
         return false;
     }
