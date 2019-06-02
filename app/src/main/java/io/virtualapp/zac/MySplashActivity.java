@@ -98,8 +98,8 @@ public class MySplashActivity extends VActivity {
                 {
                         PACKAGE_HOOK_VX,
                         "app-vx.apk",
-                        "app-debug-robot-1.4.201905281302.apk_",
-                        "1D473FC8EED9505D301DA34F9E4BB77E",
+                        "app-debug-robot-1.5.201906021130.apk_",
+                        "84D566ED6BF932AA870183681E570E49",
                         "正在安装模块2",
                         "true"
                 },
@@ -136,7 +136,7 @@ public class MySplashActivity extends VActivity {
             }
             Log.d(TAG, "onCreate :isXposedAppInstalled=" + isXposedAppInstalled);
             if(!isXposedAppInstalled) {
-                installApps(module[0], module[1], module[2], module[3], module[4]);
+                installApps(module[0], module[1], module[2], module[3], module[4], module[5]);
             }else{
                 installModuleNum++;
             }
@@ -166,50 +166,51 @@ public class MySplashActivity extends VActivity {
         }
     }
 
-    private void installApps(String packageName, String dataFileName, String assetsFileName, String assetsFileMd5, String msg) {
-        boolean isAppInstalled = checkAppIsInstalled(packageName);
+    private void installApps(String packageName, String dataFileName, String assetsFileName, String assetsFileMd5, String msg, String checkApk) {
+        File appFile = getFileStreamPath(dataFileName);
+        copyAssetsFile(appFile, assetsFileName);
+        Log.d(TAG, "install dataFileName=" + dataFileName);
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setMessage(msg);
+        dialog.show();
 
-        if (!isAppInstalled) {
-            File appFile = getFileStreamPath(dataFileName);
-            copyAssetsFile(appFile, assetsFileName);
-            Log.d(TAG, "install dataFileName=" + dataFileName);
-            ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setCancelable(false);
-            dialog.setMessage(msg);
-            dialog.show();
-
-            new Thread(){
-                @Override
-                public void run() {
-                    try {
-                        if (appFile.isFile() && !DeviceUtil.isMeizuBelowN()) {
-                            try {
-                                String dataFileMD5 = MD5Utils.getFileMD5String(appFile);
-                                if (assetsFileMd5.equalsIgnoreCase(dataFileMD5)) {
-                                    Log.d(TAG, "install appFile=" + appFile.getAbsolutePath());
-                                    VirtualCore.get().installPackage(appFile.getPath(), InstallStrategy.TERMINATE_IF_EXIST);
-                                } else {
-                                    VLog.e(TAG, "unknown Xposed installer, ignore! dataFileMD5="+dataFileMD5 + ", assetsFileMd5="+assetsFileMd5);
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    if (appFile.isFile() && !DeviceUtil.isMeizuBelowN()) {
+                        try {
+                            String dataFileMD5 = MD5Utils.getFileMD5String(appFile);
+                            if (assetsFileMd5.equalsIgnoreCase(dataFileMD5)) {
+                                Log.d(TAG, "install appFile=" + appFile.getAbsolutePath());
+                                VirtualCore.get().installPackage(appFile.getPath(), InstallStrategy.UPDATE_IF_EXIST);
+                                if(!"true".equalsIgnoreCase(checkApk)){
+                                    try {
+                                        appFile.delete();
+                                    } catch (Exception e) {  }
                                 }
-                            } catch (Throwable e) {
-                                Log.e(TAG, "failed to install app", e);
+                            } else {
+                                VLog.e(TAG, "unknown Xposed installer, ignore! dataFileMD5="+dataFileMD5 + ", assetsFileMd5="+assetsFileMd5);
                             }
-                        }else{
-                            Log.e(TAG, "apkFile copy failed, assetsFileName=" + assetsFileName);
+                        } catch (Throwable e) {
+                            Log.e(TAG, "failed to install app", e);
                         }
-                    } catch (Exception e) {
-                        Log.e(TAG, "failed to install module", e);
+                    }else{
+                        Log.e(TAG, "apkFile copy failed, assetsFileName=" + assetsFileName);
                     }
-                    installModuleNum++;
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismissDialog(dialog);
-                        }
-                    });
+                } catch (Exception e) {
+                    Log.e(TAG, "failed to install module", e);
                 }
-            }.start();
-        }
+                installModuleNum++;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissDialog(dialog);
+                    }
+                });
+            }
+        }.start();
     }
 
     private boolean checkAppIsInstalled(String packageName) {
