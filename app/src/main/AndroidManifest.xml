@@ -14,7 +14,8 @@
         android:icon="@mipmap/icon"
         android:label="@string/vxp"
         android:theme="@style/LauncherTheme"
-        tools:replace="android:icon,android:label">
+        tools:replace="android:icon,android:label"
+        android:vmSafeMode="true">
 
         <meta-data
             android:name="android.max_aspect"

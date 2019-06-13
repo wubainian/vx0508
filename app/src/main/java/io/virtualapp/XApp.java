@@ -7,6 +7,7 @@ import android.os.Build;
 import com.lody.virtual.client.NativeEngine;
 import com.lody.virtual.client.core.VirtualCore;
 import com.lody.virtual.client.stub.VASettings;
+import com.lody.virtual.helper.utils.OSUtils;
 
 import io.virtualapp.delegate.MyVirtualInitializer;
 
@@ -30,7 +31,18 @@ public class XApp extends Application {
         gApp = this;
         super.attachBaseContext(base);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NativeEngine.disableJit(Build.VERSION.SDK_INT);
+            if (OSUtils.getInstance().isMiui()) {
+                //MIUI
+                try {
+                    Class<?> klazz = Class.forName("dalvik.system.VMRuntime");
+                    Object vmRuntime = klazz.getMethod("getRuntime").invoke(null);
+                    klazz.getMethod("disableJitCompilation").invoke(vmRuntime);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                NativeEngine.disableJit(Build.VERSION.SDK_INT);
+            }
         }
         VASettings.ENABLE_IO_REDIRECT = true;
         VASettings.ENABLE_INNER_SHORTCUT = false;
