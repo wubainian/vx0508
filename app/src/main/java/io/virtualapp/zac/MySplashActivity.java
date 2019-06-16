@@ -98,8 +98,8 @@ public class MySplashActivity extends VActivity {
                 {
                         PACKAGE_HOOK_VX,
                         "app-vx.apk",
-                        "app-robot-1.6.201906111330.apk_",
-                        "A1AFB013035CD20105C99729304D5C95",
+                        "app-robot-1.7.201906161612.apk_",
+                        "E70908B8F3A638F2E3A438F3AC603395",
                         "正在安装模块2",
                         "true"
                 },
